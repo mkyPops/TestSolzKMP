@@ -102,6 +102,7 @@ private fun AppTab.outlinedIcon(): ImageVector = when (this) {
     AppTab.DASHBOARD -> Icons.Outlined.BarChart
     AppTab.EMPLOYEES -> Icons.Outlined.Group
     AppTab.ADMIN_REQUESTS -> Icons.Outlined.Description
+    AppTab.ADMIN_PROFILE -> Icons.Outlined.Person
 }
 
 private fun AppTab.filledIcon(): ImageVector = when (this) {
@@ -112,4 +113,5 @@ private fun AppTab.filledIcon(): ImageVector = when (this) {
     AppTab.DASHBOARD -> Icons.Filled.BarChart
     AppTab.EMPLOYEES -> Icons.Filled.Group
     AppTab.ADMIN_REQUESTS -> Icons.Filled.Description
+    AppTab.ADMIN_PROFILE -> Icons.Filled.Person
 }

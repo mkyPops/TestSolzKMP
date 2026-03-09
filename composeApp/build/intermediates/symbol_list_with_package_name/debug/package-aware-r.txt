@@ -162,6 +162,11 @@ layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+mipmap ic_launcher
+mipmap ic_launcher2
+mipmap ic_launcher3
+mipmap ic_launcher4
+mipmap ic_launcher5
 string androidx_startup
 string call_notification_answer_action
 string call_notification_answer_video_action

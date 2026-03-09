@@ -27,8 +27,8 @@
 19-->[androidx.core:core:1.13.0] C:\Users\SQA\.gradle\caches\8.10.2\transforms\6842daf699209f560994d989a2bdd9ed\transformed\core-1.13.0\AndroidManifest.xml:28:18-86
 20        android:debuggable="true"
 21        android:extractNativeLibs="false"
-22        android:icon="@android:drawable/sym_def_app_icon"
-22-->C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:5:9-58
+22        android:icon="@mipmap/ic_launcher"
+22-->C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:5:9-43
 23        android:label="TestSolz"
 23-->C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:6:9-33
 24        android:supportsRtl="true"

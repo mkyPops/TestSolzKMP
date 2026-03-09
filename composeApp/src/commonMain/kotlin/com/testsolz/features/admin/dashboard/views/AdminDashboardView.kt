@@ -3,9 +3,6 @@ package com.testsolz.features.admin.dashboard.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.testsolz.designsystem.theme.*
 import com.testsolz.features.admin.dashboard.viewmodels.AdminDashboardViewModel
+import com.testsolz.features.admin.dashboard.viewmodels.StatCategory
 import com.testsolz.shared.components.cards.MetricCard
 
 /**
@@ -26,6 +24,20 @@ fun AdminDashboardView(
     viewModel: AdminDashboardViewModel = viewModel()
 ) {
     val metrics by viewModel.metrics.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val allEmployees by viewModel.allEmployees.collectAsState()
+    val pendingRequests by viewModel.pendingRequestInfos.collectAsState()
+
+    // Show detail view if a category is selected
+    if (selectedCategory != null) {
+        StatDetailView(
+            category = selectedCategory!!,
+            employees = viewModel.getEmployeesForCategory(selectedCategory!!),
+            pendingRequests = pendingRequests,
+            onBack = { viewModel.clearCategory() }
+        )
+        return
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -49,7 +61,7 @@ fun AdminDashboardView(
             }
         }
 
-        // Metrics Grid
+        // Metrics Grid — 2×2 layout
         item {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
                 Row(
@@ -57,15 +69,17 @@ fun AdminDashboardView(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
                 ) {
                     MetricCard(
-                        label = "Total Employees",
-                        value = metrics.totalEmployees.toString(),
-                        modifier = Modifier.weight(1f)
-                    )
-                    MetricCard(
                         label = "Present Today",
                         value = metrics.presentToday.toString(),
-                        subtitle = "${((metrics.presentToday.toFloat() / metrics.totalEmployees) * 100).toInt()}%",
-                        modifier = Modifier.weight(1f)
+                        subtitle = "${((metrics.presentToday.toFloat() / metrics.totalEmployees.coerceAtLeast(1)) * 100).toInt()}%",
+                        modifier = Modifier.weight(1f),
+                        onClick = { viewModel.selectCategory(StatCategory.PRESENT_TODAY) }
+                    )
+                    MetricCard(
+                        label = "On Leave",
+                        value = metrics.onLeave.toString(),
+                        modifier = Modifier.weight(1f),
+                        onClick = { viewModel.selectCategory(StatCategory.ON_LEAVE) }
                     )
                 }
 
@@ -74,24 +88,19 @@ fun AdminDashboardView(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
                 ) {
                     MetricCard(
-                        label = "On Leave",
-                        value = metrics.onLeave.toString(),
-                        modifier = Modifier.weight(1f)
-                    )
-                    MetricCard(
                         label = "Late Today",
                         value = metrics.lateToday.toString(),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        onClick = { viewModel.selectCategory(StatCategory.LATE_TODAY) }
+                    )
+                    MetricCard(
+                        label = "Pending Requests",
+                        value = metrics.pendingRequests.toString(),
+                        subtitle = "Awaiting review",
+                        modifier = Modifier.weight(1f),
+                        onClick = { viewModel.selectCategory(StatCategory.PENDING_REQUESTS) }
                     )
                 }
-
-                MetricCard(
-                    label = "Pending Requests",
-                    value = metrics.pendingRequests.toString(),
-                    subtitle = "Awaiting review",
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { /* Navigate to requests */ }
-                )
             }
         }
 

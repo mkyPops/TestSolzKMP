@@ -9,6 +9,7 @@ import com.testsolz.core.navigation.AppTab
 import com.testsolz.designsystem.theme.ColorPalette
 import com.testsolz.features.admin.attendancemonitor.views.EmployeeListView
 import com.testsolz.features.admin.dashboard.views.AdminDashboardView
+import com.testsolz.features.admin.profile.views.AdminProfileView
 import com.testsolz.features.admin.requests.views.AdminRequestsView
 import com.testsolz.shared.components.navigation.CustomTabBar
 
@@ -22,6 +23,8 @@ fun AdminTabView(
 ) {
     var selectedTab by remember { mutableStateOf(AppTab.DASHBOARD) }
 
+    val currentUser by authViewModel.currentUser.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,6 +37,10 @@ fun AdminTabView(
                     AppTab.DASHBOARD -> AdminDashboardView()
                     AppTab.EMPLOYEES -> EmployeeListView()
                     AppTab.ADMIN_REQUESTS -> AdminRequestsView()
+                    AppTab.ADMIN_PROFILE -> AdminProfileView(
+                        user = currentUser ?: com.testsolz.domain.models.User.mockAdmin,
+                        onLogout = { authViewModel.logout() }
+                    )
                     else -> {}
                 }
             }

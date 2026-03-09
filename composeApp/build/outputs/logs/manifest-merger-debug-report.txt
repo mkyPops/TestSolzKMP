@@ -86,7 +86,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\SQ
 	android:label
 		ADDED from C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:6:9-33
 	android:icon
-		ADDED from C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:5:9-58
+		ADDED from C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:5:9-43
 	android:allowBackup
 		ADDED from C:\Users\SQA\Downloads\TestSolzKMP\composeApp\src\androidMain\AndroidManifest.xml:4:9-35
 	android:theme
