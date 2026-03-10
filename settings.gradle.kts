@@ -17,4 +17,3 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-include(":server")
