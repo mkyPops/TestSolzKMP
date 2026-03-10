@@ -1,43 +1,42 @@
 package com.testsolz.features.employee.profile.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.testsolz.designsystem.theme.AppTypography
-import com.testsolz.designsystem.theme.ColorPalette
-import com.testsolz.designsystem.theme.PaddingPresets
-import com.testsolz.designsystem.theme.Shapes
-import com.testsolz.designsystem.theme.Spacing
+import com.testsolz.designsystem.theme.*
 import com.testsolz.domain.models.User
+import com.testsolz.shared.components.buttons.PrimaryButton
 import com.testsolz.shared.components.buttons.SecondaryButton
 import com.testsolz.shared.components.cards.BaseCard
+import com.testsolz.shared.components.input.CustomTextField
 
 /**
  * Profile View
- * Employee profile screen
+ * Employee profile screen with info and edit
  */
 @Composable
 fun ProfileView(
     user: User = User.mock,
     onLogout: () -> Unit = {}
 ) {
-    val initials = user.name
+    var employeeUser by remember { mutableStateOf(user) }
+    var isEditing by remember { mutableStateOf(false) }
+
+    // Form states
+    var name by remember(employeeUser) { mutableStateOf(employeeUser.name) }
+    var email by remember(employeeUser) { mutableStateOf(employeeUser.email) }
+    var phone by remember { mutableStateOf("") } // New contact info field
+
+    val initials = employeeUser.name
         .split(" ")
         .filter { it.isNotBlank() }
         .take(2)
@@ -47,82 +46,153 @@ fun ProfileView(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorPalette.background)
-            .padding(PaddingPresets.screen),
+            .padding(PaddingPresets.screen)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Spacing.lg)
     ) {
-        Column(
+        // Header
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Profile",
-                style = AppTypography.headlineLarge
-            )
-            Text(
-                text = "Your account details",
-                style = AppTypography.bodySmall,
-                color = ColorPalette.textSecondary
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+                Text(
+                    text = "Profile",
+                    style = AppTypography.headlineLarge
+                )
+                Text(
+                    text = if (isEditing) "Edit your profile" else "Your account details",
+                    style = AppTypography.bodySmall,
+                    color = ColorPalette.textSecondary
+                )
+            }
+
+            if (!isEditing) {
+                TextButton(onClick = { isEditing = true }) {
+                    Text(
+                        text = "Edit",
+                        style = AppTypography.labelLarge,
+                        color = ColorPalette.primary
+                    )
+                }
+            }
         }
 
+        // Profile card
         BaseCard(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(Spacing.md)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(CircleShape)
-                            .background(ColorPalette.primaryLight),
-                        contentAlignment = Alignment.Center
+                if (!isEditing) {
+                    // View Mode
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = initials,
-                            style = AppTypography.titleMedium,
-                            color = ColorPalette.primary
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(ColorPalette.primaryLight),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = initials,
+                                style = AppTypography.titleMedium,
+                                color = ColorPalette.primary
+                            )
+                        }
+
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.xxxs)) {
+                            Text(
+                                text = employeeUser.name,
+                                style = AppTypography.titleLarge
+                            )
+                            Text(
+                                text = employeeUser.email,
+                                style = AppTypography.captionMedium,
+                                color = ColorPalette.textSecondary
+                            )
+                        }
                     }
 
-                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xxxs)) {
-                        Text(
-                            text = user.name,
-                            style = AppTypography.titleLarge
-                        )
-                        Text(
-                            text = user.email,
-                            style = AppTypography.captionMedium,
-                            color = ColorPalette.textSecondary
-                        )
+                    Spacer(modifier = Modifier.height(Spacing.sm))
+
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+                        InfoRow("Role", employeeUser.role.displayName)
+                        InfoRow("Department", employeeUser.department ?: "N/A")
+                        InfoRow("Contact", if (phone.isNotBlank()) phone else "Not set")
                     }
-                }
+                } else {
+                    // Edit Mode
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
+                        CustomTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            label = "Full Name",
+                            placeholder = "Update your name"
+                        )
 
-                Spacer(modifier = Modifier.height(Spacing.sm))
+                        CustomTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = "Email Address",
+                            placeholder = "Update your email"
+                        )
 
-                Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
-                    InfoRow("Role", user.role.displayName)
-                    InfoRow("Department", user.department ?: "N/A")
+                        CustomTextField(
+                            value = phone,
+                            onValueChange = { phone = it },
+                            label = "Phone Number",
+                            placeholder = "Update your contact info"
+                        )
+
+                        Spacer(modifier = Modifier.height(Spacing.sm))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                        ) {
+                            OutlinedButton(
+                                onClick = { isEditing = false },
+                                modifier = Modifier.weight(1f).height(56.dp),
+                                shape = Shapes.button
+                            ) {
+                                Text("Cancel", style = AppTypography.buttonMedium)
+                            }
+
+                            PrimaryButton(
+                                text = "Save",
+                                onClick = {
+                                    employeeUser = employeeUser.copy(name = name, email = email)
+                                    isEditing = false
+                                },
+                                modifier = Modifier.weight(1f),
+                                enabled = name.isNotBlank() && email.contains("@")
+                            )
+                        }
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(Spacing.md))
+        if (!isEditing) {
+            Spacer(modifier = Modifier.height(Spacing.md))
 
-        SecondaryButton(
-            text = "Logout",
-            onClick = onLogout,
-            modifier = Modifier.fillMaxWidth()
-        )
+            SecondaryButton(
+                text = "Logout",
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = "Signed in as ${user.email}",
+            text = "Signed in as ${employeeUser.email}",
             style = AppTypography.captionSmall,
             color = ColorPalette.textTertiary,
             modifier = Modifier.fillMaxWidth(),

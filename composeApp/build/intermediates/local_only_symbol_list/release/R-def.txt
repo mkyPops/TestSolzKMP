@@ -1,0 +1,7 @@
+R_DEF: Internal format may change without notice
+local
+mipmap ic_launcher
+mipmap ic_launcher2
+mipmap ic_launcher3
+mipmap ic_launcher4
+mipmap ic_launcher5
