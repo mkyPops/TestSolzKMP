@@ -1,42 +1,22 @@
 [
     {
-        "merged": "com.testsolz.composeApp-merged_res-46:/mipmap-xxhdpi_ic_launcher4.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-47:/mipmap-xxhdpi/ic_launcher4.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xxxhdpi_ic_launcher5.png.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xxxhdpi/ic_launcher5.png"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-46:/mipmap-xhdpi_ic_launcher3.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-47:/mipmap-xhdpi/ic_launcher3.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-merged_res-46:\\mipmap-xxhdpi_ic_launcher4.png.flat",
-        "source": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-androidMain-47:\\mipmap-xxhdpi\\ic_launcher4.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xhdpi_ic_launcher3.png.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xhdpi/ic_launcher3.png"
     },
     {
-        "merged": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-merged_res-46:\\mipmap-xxxhdpi_ic_launcher5.png.flat",
-        "source": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-androidMain-47:\\mipmap-xxxhdpi\\ic_launcher5.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-mdpi_ic_launcher2.png.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-mdpi/ic_launcher2.png"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-46:/mipmap-xxxhdpi_ic_launcher5.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-47:/mipmap-xxxhdpi/ic_launcher5.png"
-    },
-    {
-        "merged": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-merged_res-46:\\mipmap-hdpi_ic_launcher.png.flat",
-        "source": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-androidMain-47:\\mipmap-hdpi\\ic_launcher.png"
-    },
-    {
-        "merged": "com.testsolz.composeApp-merged_res-46:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-47:/mipmap-hdpi/ic_launcher.png"
-    },
-    {
-        "merged": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-merged_res-46:\\mipmap-xhdpi_ic_launcher3.png.flat",
-        "source": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-androidMain-47:\\mipmap-xhdpi\\ic_launcher3.png"
-    },
-    {
-        "merged": "com.testsolz.composeApp-merged_res-46:/mipmap-mdpi_ic_launcher2.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-47:/mipmap-mdpi/ic_launcher2.png"
-    },
-    {
-        "merged": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-merged_res-46:\\mipmap-mdpi_ic_launcher2.png.flat",
-        "source": "C:\\Users\\SQA\\.gradle\\daemon\\8.10.2\\com.testsolz.composeApp-androidMain-47:\\mipmap-mdpi\\ic_launcher2.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xxhdpi_ic_launcher4.png.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xxhdpi/ic_launcher4.png"
     }
 ]
