@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.2.2" type="partial_results">
+    <map id="UnsafeIntentLaunch">
+            <map id="unprotected">
+                <entry
+                    name="com.testsolz.MainActivity"
+                    boolean="true"/>
+            </map>
+    </map>
+    <map id="UnusedResources">
+        <location id="R.mipmap.ic_launcher4"
+            file="${:composeApp*debug*MAIN*sourceProvider*0*resDir*1}/mipmap-xxhdpi/ic_launcher4.png"/>
+        <location id="R.mipmap.ic_launcher3"
+            file="${:composeApp*debug*MAIN*sourceProvider*0*resDir*1}/mipmap-xhdpi/ic_launcher3.png"/>
+        <location id="R.mipmap.ic_launcher5"
+            file="${:composeApp*debug*MAIN*sourceProvider*0*resDir*1}/mipmap-xxxhdpi/ic_launcher5.png"/>
+        <entry
+            name="model"
+            string="mipmap[ic_launcher5(D),ic_launcher2(D),ic_launcher(U),ic_launcher4(D),ic_launcher3(D)];;;;"/>
+        <location id="R.mipmap.ic_launcher2"
+            file="${:composeApp*debug*MAIN*sourceProvider*0*resDir*1}/mipmap-mdpi/ic_launcher2.png"/>
+    </map>
+
+</incidents>
