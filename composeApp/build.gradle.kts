@@ -48,6 +48,19 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
+            
+            // Ktor Client for API calls
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+        }
+        
+        androidMain.dependencies {
+            implementation(libs.ktor.client.android)
+        }
+        
+        iosMain.dependencies {
+            implementation(libs.ktor.client.ios)
         }
     }
 }
