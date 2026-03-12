@@ -6,6 +6,8 @@ const iotrouter = require('./iot/iot.route');
 const attendanceRouter = require('./attendance/attendance.route');
 const requestsRouter = require('./requests/requests.routes');
 const employeesRouter = require('./employees/employees.route');
+const dashboardRouter = require('./dashboard/dashboard.route'); 
+
 
 const app = express();
 
@@ -31,6 +33,9 @@ app.use('/v1/requests', requestsRouter);
 
 // Employees routes
 app.use('/v1/admin/employees', employeesRouter);
+
+// Dashboard routes
+app.use('/v1/admin/dashboard', dashboardRouter);
 
 // 404 handler
 app.use((req, res) => {
