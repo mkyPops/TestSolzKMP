@@ -4,24 +4,7 @@
             "outputFile": "com.testsolz.composeApp-mergeDebugResources-45:/values/values.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\b7ee3db76d1af057b3a70d58d4667770\\transformed\\savedstate-1.2.1\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "53",
-                        "endOffsets": "104"
-                    },
-                    "to": {
-                        "startLines": "94",
-                        "startColumns": "4",
-                        "startOffsets": "5710",
-                        "endColumns": "53",
-                        "endOffsets": "5759"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\5129bfefac760f1777adb3de0659c11a\\transformed\\startup-runtime-1.1.1\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\fcc3751a4a8335bf72dd9abc782e5cd1\\transformed\\startup-runtime-1.1.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -38,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\11181e4465e62552042313841e39520b\\transformed\\core-1.13.0\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\03f3e0a270d648d0c05b5a9be6acef94\\transformed\\core-1.13.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,98,99,103,104,105,106,112,122,155,176,209",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -57,41 +40,58 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\2b2505b176488e893e3dcbe2d8dfba59\\transformed\\activity-1.9.0\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\933913a5e1fb25cf0d211592180ee253\\transformed\\lifecycle-runtime-release\\res\\values\\values.xml",
                     "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,97",
-                        "endColumns": "41,59",
-                        "endOffsets": "92,152"
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "42",
+                        "endOffsets": "93"
                     },
                     "to": {
-                        "startLines": "75,93",
-                        "startColumns": "4,4",
-                        "startOffsets": "4706,5650",
-                        "endColumns": "41,59",
-                        "endOffsets": "4743,5705"
+                        "startLines": "92",
+                        "startColumns": "4",
+                        "startOffsets": "5607",
+                        "endColumns": "42",
+                        "endOffsets": "5645"
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\460ed1eab70d2c350714d5a353fa2ded\\transformed\\foundation-release\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\3524bf0646e80581bece51409af56059\\transformed\\customview-poolingcontainer-1.0.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
-                        "startOffsets": "55,111",
-                        "endColumns": "55,54",
-                        "endOffsets": "106,161"
+                        "startOffsets": "55,109",
+                        "endColumns": "53,66",
+                        "endOffsets": "104,171"
                     },
                     "to": {
-                        "startLines": "184,185",
+                        "startLines": "71,74",
                         "startColumns": "4,4",
-                        "startOffsets": "11934,11990",
-                        "endColumns": "55,54",
-                        "endOffsets": "11985,12040"
+                        "startOffsets": "4515,4639",
+                        "endColumns": "53,66",
+                        "endOffsets": "4564,4701"
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\e14bf0a906edb04f31d802187341d6ea\\transformed\\ui-release\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\904b01830a5be15c53af027cbced6f65\\transformed\\savedstate-1.2.1\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "53",
+                        "endOffsets": "104"
+                    },
+                    "to": {
+                        "startLines": "94",
+                        "startColumns": "4",
+                        "startOffsets": "5710",
+                        "endColumns": "53",
+                        "endOffsets": "5759"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\f6157757525911116d5782564e552c1c\\transformed\\ui-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,60,63",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -110,41 +110,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\e45c281127fce8bd3b1f6e57681985e5\\transformed\\lifecycle-runtime-release\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "42",
-                        "endOffsets": "93"
-                    },
-                    "to": {
-                        "startLines": "92",
-                        "startColumns": "4",
-                        "startOffsets": "5607",
-                        "endColumns": "42",
-                        "endOffsets": "5645"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\8644fe503468bde6a744d326b6804350\\transformed\\customview-poolingcontainer-1.0.0\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,109",
-                        "endColumns": "53,66",
-                        "endOffsets": "104,171"
-                    },
-                    "to": {
-                        "startLines": "71,74",
-                        "startColumns": "4,4",
-                        "startOffsets": "4515,4639",
-                        "endColumns": "53,66",
-                        "endOffsets": "4564,4701"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\1c75774cdca662d3084d80d43c791b38\\transformed\\material3-release\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\6b2b65f2b44cd20b6c1eb94793fd9881\\transformed\\material3-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,14,15,16,17,18,19,20,21,22,23,24,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -163,7 +129,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\cfa53900d8eda64cb2adb734cc04ee63\\transformed\\lifecycle-viewmodel-release\\res\\values\\values.xml",
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\268179d5c57cd4f4533950790dd76201\\transformed\\foundation-release\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,111",
+                        "endColumns": "55,54",
+                        "endOffsets": "106,161"
+                    },
+                    "to": {
+                        "startLines": "184,185",
+                        "startColumns": "4,4",
+                        "startOffsets": "11934,11990",
+                        "endColumns": "55,54",
+                        "endOffsets": "11985,12040"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\a93ce71fa8eb8cdc07b10d47f9089dd8\\transformed\\lifecycle-viewmodel-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -177,6 +160,23 @@
                         "startOffsets": "5764",
                         "endColumns": "49",
                         "endOffsets": "5809"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\dell\\.gradle\\caches\\8.11\\transforms\\8181e275cebb1c791cbf309ee6a9996a\\transformed\\activity-1.9.0\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,97",
+                        "endColumns": "41,59",
+                        "endOffsets": "92,152"
+                    },
+                    "to": {
+                        "startLines": "75,93",
+                        "startColumns": "4,4",
+                        "startOffsets": "4706,5650",
+                        "endColumns": "41,59",
+                        "endOffsets": "4743,5705"
                     }
                 }
             ]

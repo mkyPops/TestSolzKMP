@@ -33,6 +33,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-okhttp:2.3.7")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -49,18 +50,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             
-            // Ktor Client for API calls
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-        }
-        
-        androidMain.dependencies {
-            implementation(libs.ktor.client.android)
+            // Ktor client
+            implementation("io.ktor:ktor-client-core:2.3.7")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+            implementation("io.ktor:ktor-client-logging:2.3.7")
         }
         
         iosMain.dependencies {
-            implementation(libs.ktor.client.ios)
+            implementation("io.ktor:ktor-client-darwin:2.3.7")
         }
     }
 }

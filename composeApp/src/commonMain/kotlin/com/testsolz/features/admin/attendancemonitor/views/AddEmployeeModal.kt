@@ -4,24 +4,37 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.testsolz.designsystem.theme.*
+import com.testsolz.features.admin.attendancemonitor.viewmodels.EmployeeViewModel
 import com.testsolz.shared.components.buttons.PrimaryButton
 import com.testsolz.shared.components.input.CustomTextField
 
 @Composable
 fun AddEmployeeModal(
-    onDismiss: () -> Unit,
-    onConfirm: (name: String, email: String, department: String) -> Unit
+    viewModel: EmployeeViewModel,
+    onDismiss: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var department by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    val isLoading by viewModel.isLoading
+    val error by viewModel.error
+    val employeeAdded by viewModel.employeeAdded
+
+    // Auto-close modal when employee is added successfully
+    LaunchedEffect(employeeAdded) {
+        if (employeeAdded) {
+            viewModel.resetEmployeeAdded()
+            onDismiss()
+        }
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -37,10 +50,7 @@ fun AddEmployeeModal(
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.md)
             ) {
-                Text(
-                    text = "Add New Employee",
-                    style = AppTypography.headlineSmall
-                )
+                Text(text = "Add New Employee", style = AppTypography.headlineSmall)
 
                 Text(
                     text = "Enter the details for the new employee account.",
@@ -71,6 +81,18 @@ fun AddEmployeeModal(
                     placeholder = "e.g. Engineering"
                 )
 
+                CustomTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = "Password",
+                    placeholder = "Min 6 characters"
+                )
+
+                // Show error if any
+                error?.let {
+                    Text(text = it, color = MaterialTheme.colorScheme.error, style = AppTypography.bodySmall)
+                }
+
                 Spacer(modifier = Modifier.height(Spacing.md))
 
                 Row(
@@ -79,9 +101,7 @@ fun AddEmployeeModal(
                 ) {
                     OutlinedButton(
                         onClick = onDismiss,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                        modifier = Modifier.weight(1f).height(56.dp),
                         shape = Shapes.button,
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = ColorPalette.textSecondary
@@ -91,10 +111,10 @@ fun AddEmployeeModal(
                     }
 
                     PrimaryButton(
-                        text = "Add Employee",
-                        onClick = { onConfirm(name, email, department) },
+                        text = if (isLoading) "Adding..." else "Add Employee",
+                        onClick = { viewModel.createEmployee(name, email, department, password) },
                         modifier = Modifier.weight(1f),
-                        enabled = name.isNotBlank() && email.contains("@") && department.isNotBlank()
+                        enabled = name.isNotBlank() && email.contains("@") && department.isNotBlank() && password.length >= 6 && !isLoading
                     )
                 }
             }

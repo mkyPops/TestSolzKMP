@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import * as employeeController from '../controllers/employeeController';
-import { authMiddleware } from '../middleware/auth';
+import { getEmployees, getEmployeeById, createEmployee, updateEmployee, deleteEmployee } from '../controllers/employeeController';
 
 const router = Router();
 
-// GET /api/employees - List all employees
-router.get('/', authMiddleware, employeeController.getEmployees);
-
-// POST /api/employees - Add employee
-router.post('/', authMiddleware, employeeController.createEmployee);
+router.get('/',     getEmployees);
+router.get('/:id',  getEmployeeById);
+router.post('/',    createEmployee);
+router.put('/:id',  updateEmployee);
+router.delete('/:id', deleteEmployee);
 
 export default router;

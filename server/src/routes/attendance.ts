@@ -1,16 +1,9 @@
 import { Router } from 'express';
-import * as attendanceController from '../controllers/attendanceController';
-import { authMiddleware } from '../middleware/auth';
+import { checkIn, checkOut, getAttendanceByEmployee, getTodayAttendance } from '../controllers/attendanceController';
 
 const router = Router();
-
-// GET /api/attendance/:employeeId - Get attendance records
-router.get('/:employeeId', authMiddleware, attendanceController.getAttendance);
-
-// POST /api/attendance/checkin - Mark check-in
-router.post('/checkin', authMiddleware, attendanceController.checkin);
-
-// POST /api/attendance/checkout - Mark check-out
-router.post('/checkout', authMiddleware, attendanceController.checkout);
-
+router.post('/checkin',        checkIn);
+router.post('/checkout',       checkOut);
+router.get('/today/all',       getTodayAttendance);
+router.get('/:employeeId',     getAttendanceByEmployee);
 export default router;

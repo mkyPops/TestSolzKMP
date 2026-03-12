@@ -3,47 +3,21 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IAttendance extends Document {
   employeeId: mongoose.Types.ObjectId;
   date: Date;
-  checkinTime?: Date;
-  checkoutTime?: Date;
-  workingHours?: number;
+  checkIn: Date;
+  checkOut?: Date;
   status: 'present' | 'absent' | 'late' | 'half-day';
-  remarks?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  workHours?: number;
+  notes?: string;
 }
 
-const attendanceSchema = new Schema<IAttendance>(
-  {
-    employeeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Employee',
-      required: true
-    },
-    date: {
-      type: Date,
-      required: true,
-      default: () => new Date().setHours(0, 0, 0, 0)
-    },
-    checkinTime: {
-      type: Date
-    },
-    checkoutTime: {
-      type: Date
-    },
-    workingHours: {
-      type: Number,
-      default: 0
-    },
-    status: {
-      type: String,
-      enum: ['present', 'absent', 'late', 'half-day'],
-      default: 'absent'
-    },
-    remarks: {
-      type: String
-    }
-  },
-  { timestamps: true }
-);
+const AttendanceSchema = new Schema<IAttendance>({
+  employeeId: { type: Schema.Types.ObjectId, ref: 'Employee', required: true },
+  date:       { type: Date, required: true },
+  checkIn:    { type: Date, required: true },
+  checkOut:   { type: Date },
+  status:     { type: String, enum: ['present', 'absent', 'late', 'half-day'], default: 'present' },
+  workHours:  { type: Number },
+  notes:      { type: String }
+}, { timestamps: true });
 
-export const Attendance = mongoose.model<IAttendance>('Attendance', attendanceSchema);
+export default mongoose.model<IAttendance>('Attendance', AttendanceSchema);

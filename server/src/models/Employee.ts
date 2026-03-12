@@ -5,44 +5,21 @@ export interface IEmployee extends Document {
   email: string;
   department: string;
   salary: number;
-  phone?: string;
+  position: string;
+  phone: string;
   joinDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  isActive: boolean;
 }
 
-const employeeSchema = new Schema<IEmployee>(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true
-    },
-    department: {
-      type: String,
-      required: true
-    },
-    salary: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    phone: {
-      type: String,
-      trim: true
-    },
-    joinDate: {
-      type: Date,
-      default: Date.now
-    }
-  },
-  { timestamps: true }
-);
+const EmployeeSchema = new Schema<IEmployee>({
+  name:       { type: String, required: true },
+  email:      { type: String, required: true, unique: true },
+  department: { type: String, default: '' },
+  salary:     { type: Number, default: 0 },
+  position:   { type: String, default: '' },
+  phone:      { type: String, default: '' },
+  joinDate:   { type: Date, default: Date.now },
+  isActive:   { type: Boolean, default: true }
+}, { timestamps: true });
 
-export const Employee = mongoose.model<IEmployee>('Employee', employeeSchema);
+export default mongoose.model<IEmployee>('Employee', EmployeeSchema);

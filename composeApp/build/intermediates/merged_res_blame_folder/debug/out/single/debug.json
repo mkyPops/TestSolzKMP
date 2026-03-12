@@ -1,22 +1,26 @@
 [
     {
-        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xxxhdpi_ic_launcher5.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xxxhdpi/ic_launcher5.png"
+        "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-merged_res-47:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-androidMain-48:\\mipmap-hdpi\\ic_launcher.png"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-hdpi/ic_launcher.png"
+        "merged": "com.testsolz.composeApp-merged_res-47:/xml_network_security_config.xml.flat",
+        "source": "com.testsolz.composeApp-androidMain-48:/xml/network_security_config.xml"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xhdpi_ic_launcher3.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xhdpi/ic_launcher3.png"
+        "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-merged_res-47:\\mipmap-mdpi_ic_launcher2.png.flat",
+        "source": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-androidMain-48:\\mipmap-mdpi\\ic_launcher2.png"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-mdpi_ic_launcher2.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-mdpi/ic_launcher2.png"
+        "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-merged_res-47:\\mipmap-xxxhdpi_ic_launcher5.png.flat",
+        "source": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-androidMain-48:\\mipmap-xxxhdpi\\ic_launcher5.png"
     },
     {
-        "merged": "com.testsolz.composeApp-merged_res-47:/mipmap-xxhdpi_ic_launcher4.png.flat",
-        "source": "com.testsolz.composeApp-androidMain-48:/mipmap-xxhdpi/ic_launcher4.png"
+        "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-merged_res-47:\\mipmap-xhdpi_ic_launcher3.png.flat",
+        "source": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-androidMain-48:\\mipmap-xhdpi\\ic_launcher3.png"
+    },
+    {
+        "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-merged_res-47:\\mipmap-xxhdpi_ic_launcher4.png.flat",
+        "source": "C:\\Users\\dell\\.gradle\\daemon\\8.11\\com.testsolz.composeApp-androidMain-48:\\mipmap-xxhdpi\\ic_launcher4.png"
     }
 ]

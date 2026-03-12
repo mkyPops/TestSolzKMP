@@ -1,74 +1,60 @@
 import { Request, Response } from 'express';
+import Leave from '../models/Leave';
 
-/**
- * GET /api/leaves
- * List all leave requests
- */
-export const getLeaves = (req: Request, res: Response) => {
+// POST /api/leaves
+export const applyLeave = async (req: Request, res: Response) => {
   try {
-    // TODO: Query database for all leave requests
-    
-    res.json({
-      success: true,
-      data: [],
-      message: 'Leave requests retrieved successfully'
-    });
+    const { employeeId, type, startDate, endDate, reason } = req.body;
+    if (!employeeId || !type || !startDate || !endDate || !reason) {
+      return res.status(400).json({ success: false, error: 'All fields are required' });
+    }
+
+    const leave = new Leave({ employeeId, type, startDate, endDate, reason });
+    await leave.save();
+
+    res.status(201).json({ success: true, data: leave, message: 'Leave applied successfully' });
   } catch (error) {
     res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
 
-/**
- * POST /api/leaves
- * Submit a new leave request
- */
-export const submitLeave = (req: Request, res: Response) => {
+// GET /api/leaves
+export const getAllLeaves = async (req: Request, res: Response) => {
   try {
-    const { employeeId, startDate, endDate, reason, type } = req.body;
-    
-    // TODO: Validate input
-    // TODO: Save leave request to database with status 'pending'
-    
-    res.status(201).json({
-      success: true,
-      data: {
-        id: 1,
-        employeeId,
-        startDate,
-        endDate,
-        reason,
-        type,
-        status: 'pending'
-      },
-      message: 'Leave request submitted successfully'
-    });
+    const leaves = await Leave.find().populate('employeeId', 'name email department').sort({ appliedAt: -1 });
+    res.json({ success: true, data: leaves });
   } catch (error) {
     res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
 
-/**
- * PATCH /api/leaves/:id
- * Approve or reject a leave request
- */
-export const updateLeaveStatus = (req: Request, res: Response) => {
+// GET /api/leaves/:employeeId
+export const getLeavesByEmployee = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { status, remarks } = req.body;
-    
-    // TODO: Validate status is 'approved' or 'rejected'
-    // TODO: Update leave request in database
-    
-    res.json({
-      success: true,
-      data: {
-        id,
-        status,
-        remarks,
-        updatedAt: new Date()
-      },
-      message: `Leave request ${status} successfully`
-    });
+    const leaves = await Leave.find({ employeeId: req.params.employeeId }).sort({ appliedAt: -1 });
+    res.json({ success: true, data: leaves });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+};
+
+// PATCH /api/leaves/:id/approve
+export const approveLeave = async (req: Request, res: Response) => {
+  try {
+    const leave = await Leave.findByIdAndUpdate(req.params.id, { status: 'approved', approvedBy: req.body.approvedBy }, { new: true });
+    if (!leave) return res.status(404).json({ success: false, error: 'Leave not found' });
+    res.json({ success: true, data: leave, message: 'Leave approved' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+};
+
+// PATCH /api/leaves/:id/reject
+export const rejectLeave = async (req: Request, res: Response) => {
+  try {
+    const leave = await Leave.findByIdAndUpdate(req.params.id, { status: 'rejected' }, { new: true });
+    if (!leave) return res.status(404).json({ success: false, error: 'Leave not found' });
+    res.json({ success: true, data: leave, message: 'Leave rejected' });
   } catch (error) {
     res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }
