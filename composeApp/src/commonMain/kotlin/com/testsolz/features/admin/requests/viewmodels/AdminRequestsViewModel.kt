@@ -2,20 +2,19 @@ package com.testsolz.features.admin.requests.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.domain.models.LeaveRequest
-import com.testsolz.domain.models.RequestStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
 
 /**
  * Admin Requests ViewModel
  * Manages leave/late request approval/rejection
  */
 class AdminRequestsViewModel : ViewModel() {
+    private val apiClient = TestSolzApiClient()
 
     private val _requests = MutableStateFlow<List<LeaveRequest>>(emptyList())
     val requests: StateFlow<List<LeaveRequest>> = _requests.asStateFlow()
@@ -26,16 +25,36 @@ class AdminRequestsViewModel : ViewModel() {
     private val _selectedRequest = MutableStateFlow<LeaveRequest?>(null)
     val selectedRequest: StateFlow<LeaveRequest?> = _selectedRequest.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _isReviewing = MutableStateFlow(false)
+    val isReviewing: StateFlow<Boolean> = _isReviewing.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
     init {
         loadRequests()
     }
 
-    private fun loadRequests() {
+    fun loadRequests() {
         viewModelScope.launch {
-            // Load all requests, separate pending from already reviewed
-            val allRequests = LeaveRequest.mockRequests
-            _requests.value = allRequests.filter { it.status == RequestStatus.PENDING }
-            _reviewedRequests.value = allRequests.filter { it.status != RequestStatus.PENDING }
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                val pending = apiClient.adminRequests("PENDING")
+                val approved = apiClient.adminRequests("APPROVED")
+                val rejected = apiClient.adminRequests("REJECTED")
+
+                _requests.value = pending
+                _reviewedRequests.value = approved + rejected
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to load requests"
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
@@ -48,34 +67,55 @@ class AdminRequestsViewModel : ViewModel() {
     }
 
     fun approveRequest(requestId: String) {
-        val request = _requests.value.find { it.id == requestId } ?: return
-        val updatedRequest = request.copy(
-            status = RequestStatus.APPROVED,
-            adminComment = "Approved by Admin",
-            reviewedAt = Clock.System.now(),
-            reviewedBy = "Admin"
-        )
-        // Remove from pending
-        _requests.value = _requests.value.filter { it.id != requestId }
-        // Add to reviewed
-        _reviewedRequests.value = _reviewedRequests.value + updatedRequest
-        // Clear selection
-        _selectedRequest.value = null
+        reviewRequest(requestId = requestId, approve = true)
     }
 
     fun rejectRequest(requestId: String) {
-        val request = _requests.value.find { it.id == requestId } ?: return
-        val updatedRequest = request.copy(
-            status = RequestStatus.REJECTED,
-            adminComment = "Rejected by Admin",
-            reviewedAt = Clock.System.now(),
-            reviewedBy = "Admin"
-        )
-        // Remove from pending
-        _requests.value = _requests.value.filter { it.id != requestId }
-        // Add to reviewed
-        _reviewedRequests.value = _reviewedRequests.value + updatedRequest
-        // Clear selection
-        _selectedRequest.value = null
+        reviewRequest(requestId = requestId, approve = false)
+    }
+
+    private fun reviewRequest(requestId: String, approve: Boolean) {
+        viewModelScope.launch {
+            _isReviewing.value = true
+            _errorMessage.value = null
+
+            try {
+                val updatedRequest = if (approve) {
+                    apiClient.approveRequest(requestId, adminComment = "Approved by Admin")
+                } else {
+                    apiClient.rejectRequest(requestId, adminComment = "Rejected by Admin")
+                }
+
+                loadRequests()
+                _selectedRequest.value = null
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to review request"
+            } finally {
+                _isReviewing.value = false
+            }
+        }
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
+    }
+
+    fun deleteRequest(requestId: String) {
+        viewModelScope.launch {
+            _errorMessage.value = null
+            try {
+                if (apiClient.deleteAdminRequest(requestId)) {
+                    loadRequests()
+                    _selectedRequest.value = null
+                }
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to delete request"
+            }
+        }
+    }
+
+    override fun onCleared() {
+        apiClient.close()
+        super.onCleared()
     }
 }

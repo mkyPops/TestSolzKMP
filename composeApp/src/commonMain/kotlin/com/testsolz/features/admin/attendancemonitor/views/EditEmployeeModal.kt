@@ -18,11 +18,13 @@ import com.testsolz.shared.components.input.CustomTextField
 fun EditEmployeeModal(
     employee: User,
     onDismiss: () -> Unit,
-    onConfirm: (name: String, email: String, department: String) -> Unit
+    onConfirm: (name: String, department: String, password: String?, cardUid: String?) -> Unit,
+    isSaving: Boolean = false
 ) {
     var name by remember { mutableStateOf(employee.name) }
-    var email by remember { mutableStateOf(employee.email) }
     var department by remember { mutableStateOf(employee.department ?: "") }
+    var password by remember { mutableStateOf("") }
+    var cardUid by remember { mutableStateOf(employee.cardUid ?: "") }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -58,19 +60,33 @@ fun EditEmployeeModal(
                     placeholder = "e.g. John Doe"
                 )
 
-                CustomTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Email Address",
-                    placeholder = "e.g. john@testsolz.com"
-                )
+                        Text(
+                            text = employee.email,
+                            style = AppTypography.bodyMedium,
+                            color = ColorPalette.textSecondary
+                        )
 
-                CustomTextField(
-                    value = department,
+                        CustomTextField(
+                            value = department,
                     onValueChange = { department = it },
                     label = "Department",
-                    placeholder = "e.g. Engineering"
-                )
+                            placeholder = "e.g. Engineering"
+                        )
+
+                        CustomTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = "New Password (Optional)",
+                            placeholder = "Leave blank to keep current password",
+                            isPassword = true
+                        )
+
+                        CustomTextField(
+                            value = cardUid,
+                            onValueChange = { cardUid = it.formatCardUidInput() },
+                            label = "Card UID",
+                            placeholder = "Optional, e.g. 00 00 00 00"
+                        )
 
                 Spacer(modifier = Modifier.height(Spacing.md))
 
@@ -93,12 +109,21 @@ fun EditEmployeeModal(
 
                     PrimaryButton(
                         text = "Save Changes",
-                        onClick = { onConfirm(name, email, department) },
+                        onClick = { onConfirm(name, department, password.takeIf { it.isNotBlank() }, cardUid) },
                         modifier = Modifier.weight(1f),
-                        enabled = name.isNotBlank() && email.contains("@") && department.isNotBlank()
+                        isLoading = isSaving,
+                        enabled = !isSaving &&
+                            name.isNotBlank() &&
+                            department.isNotBlank() &&
+                            (password.isBlank() || password.length >= 6)
                     )
                 }
             }
         }
     }
+}
+
+private fun String.formatCardUidInput(): String {
+    val compact = filter { it.isLetterOrDigit() }.uppercase().take(8)
+    return compact.chunked(2).joinToString(" ")
 }

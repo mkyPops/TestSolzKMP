@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,9 +37,12 @@ import kotlinx.datetime.toLocalDateTime
  */
 @Composable
 fun AttendanceHistoryView(
-    viewModel: AttendanceHistoryViewModel = viewModel()
+    sessionKey: String,
+    viewModel: AttendanceHistoryViewModel = viewModel(key = "attendance-history-$sessionKey")
 ) {
     val history by viewModel.attendanceHistory.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val timeZone = TimeZone.currentSystemDefault()
     val today = Clock.System.now().toLocalDateTime(timeZone).date
     val historyByDate = history.associateBy { it.date }
@@ -110,6 +114,27 @@ fun AttendanceHistoryView(
                 historyByDate = historyByDate,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        if (isLoading) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.lg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = ColorPalette.primary)
+                }
+            }
+        }
+
+        if (errorMessage != null) {
+            item {
+                Text(
+                    text = errorMessage!!,
+                    style = AppTypography.bodyMedium,
+                    color = ColorPalette.error
+                )
+            }
         }
 
         item {

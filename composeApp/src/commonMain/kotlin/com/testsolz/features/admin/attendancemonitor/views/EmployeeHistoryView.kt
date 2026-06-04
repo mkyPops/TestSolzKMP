@@ -6,14 +6,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.designsystem.theme.*
 import com.testsolz.domain.models.Attendance
 import com.testsolz.domain.models.User
@@ -25,8 +26,25 @@ fun EmployeeHistoryView(
     employee: User,
     onBack: () -> Unit
 ) {
-    val history = remember(employee.id) {
-        Attendance.mockHistory(employee.id, daysBack = 14)
+    val apiClient = remember { TestSolzApiClient() }
+    var history by remember { mutableStateOf<List<Attendance>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(employee.id) {
+        isLoading = true
+        errorMessage = null
+        try {
+            history = apiClient.employeeAttendance(employee.id, daysBack = 14)
+        } catch (error: Exception) {
+            errorMessage = error.message ?: "Failed to load attendance history"
+        } finally {
+            isLoading = false
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { apiClient.close() }
     }
 
     Column(
@@ -70,6 +88,41 @@ fun EmployeeHistoryView(
             verticalArrangement = Arrangement.spacedBy(Spacing.md),
             contentPadding = PaddingValues(bottom = Spacing.xl)
         ) {
+            if (isLoading) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(Spacing.lg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = ColorPalette.primary)
+                    }
+                }
+            }
+
+            if (errorMessage != null) {
+                item {
+                    BaseCard(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = errorMessage!!,
+                            style = AppTypography.bodyMedium,
+                            color = ColorPalette.error
+                        )
+                    }
+                }
+            }
+
+            if (!isLoading && history.isEmpty() && errorMessage == null) {
+                item {
+                    BaseCard(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "No attendance records found",
+                            style = AppTypography.bodyMedium,
+                            color = ColorPalette.textSecondary
+                        )
+                    }
+                }
+            }
+
             items(history) { record ->
                 BaseCard(modifier = Modifier.fillMaxWidth()) {
                     Row(

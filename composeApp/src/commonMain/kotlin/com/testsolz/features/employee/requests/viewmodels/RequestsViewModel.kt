@@ -2,10 +2,9 @@ package com.testsolz.features.employee.requests.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.domain.models.LeaveRequest
 import com.testsolz.domain.models.LeaveType
-import com.testsolz.domain.models.RequestStatus
-import com.testsolz.domain.models.RequestType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,25 +13,42 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.random.Random
 
 /**
  * Requests ViewModel
  * Manages employee requests state
  */
 class RequestsViewModel : ViewModel() {
+    private val apiClient = TestSolzApiClient()
     
     private val _requests = MutableStateFlow<List<LeaveRequest>>(emptyList())
     val requests: StateFlow<List<LeaveRequest>> = _requests.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _isSubmitting = MutableStateFlow(false)
+    val isSubmitting: StateFlow<Boolean> = _isSubmitting.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
     
     init {
         loadRequests()
     }
     
-    private fun loadRequests() {
+    fun loadRequests() {
         viewModelScope.launch {
-            // Load mock requests (filtered by current user)
-            _requests.value = LeaveRequest.mockRequests.take(2)
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                _requests.value = apiClient.myRequests()
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to load requests"
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
@@ -43,25 +59,22 @@ class RequestsViewModel : ViewModel() {
         reasonLabel: String
     ) {
         viewModelScope.launch {
-            val request = LeaveRequest(
-                id = generateId(),
-                userId = "1",
-                userName = "Mashaal Khan",
-                userDepartment = "Engineering",
-                type = RequestType.LEAVE,
-                leaveType = leaveType,
-                startDate = startDate,
-                endDate = endDate,
-                expectedTime = null,
-                reason = reasonLabel,
-                status = RequestStatus.PENDING,
-                adminComment = null,
-                createdAt = Clock.System.now(),
-                reviewedAt = null,
-                reviewedBy = null
-            )
+            _isSubmitting.value = true
+            _errorMessage.value = null
 
-            _requests.value = listOf(request) + _requests.value
+            try {
+                val request = apiClient.createLeaveRequest(
+                    leaveType = leaveType,
+                    startDate = startDate.toString(),
+                    endDate = endDate?.toString(),
+                    reason = reasonLabel
+                )
+                loadRequests()
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to submit request"
+            } finally {
+                _isSubmitting.value = false
+            }
         }
     }
 
@@ -70,29 +83,45 @@ class RequestsViewModel : ViewModel() {
         note: String
     ) {
         viewModelScope.launch {
+            _isSubmitting.value = true
+            _errorMessage.value = null
+
             val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-            val request = LeaveRequest(
-                id = generateId(),
-                userId = "1",
-                userName = "Mashaal Khan",
-                userDepartment = "Engineering",
-                type = RequestType.LATE_ARRIVAL,
-                leaveType = null,
-                startDate = today,
-                endDate = null,
-                expectedTime = expectedTime,
-                reason = note.ifBlank { "Late arrival" },
-                status = RequestStatus.PENDING,
-                adminComment = null,
-                createdAt = Clock.System.now(),
-                reviewedAt = null,
-                reviewedBy = null
-            )
-
-            _requests.value = listOf(request) + _requests.value
+            try {
+                val request = apiClient.createLateArrivalRequest(
+                    startDate = today.toString(),
+                    expectedTime = expectedTime,
+                    reason = note.ifBlank { "Late arrival" }
+                )
+                loadRequests()
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to submit request"
+            } finally {
+                _isSubmitting.value = false
+            }
         }
     }
-}
 
-private fun generateId(): String = Random.nextLong().toString()
+    fun clearError() {
+        _errorMessage.value = null
+    }
+
+    fun deleteRequest(requestId: String) {
+        viewModelScope.launch {
+            _errorMessage.value = null
+            try {
+                if (apiClient.deleteMyRequest(requestId)) {
+                    loadRequests()
+                }
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Failed to delete request"
+            }
+        }
+    }
+
+    override fun onCleared() {
+        apiClient.close()
+        super.onCleared()
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "460271420654",
+    "firebase_url": "https://officeattendance-a430f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "officeattendance-a430f",
+    "storage_bucket": "officeattendance-a430f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460271420654:android:1c889ddbba1e5da1609fff",
+        "android_client_info": {
+          "package_name": "com.testsolz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtjgUqHgyfbihG4KJlsDWfik5zTCo23CA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

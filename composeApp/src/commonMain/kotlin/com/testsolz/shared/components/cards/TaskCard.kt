@@ -24,6 +24,7 @@ fun TaskCard(
     task: TaskItem,
     onToggle: () -> Unit,
     onClick: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     BaseCard(
@@ -68,15 +69,26 @@ fun TaskCard(
                 }
             }
             
-            Checkbox(
-                checked = task.isCompleted,
-                onCheckedChange = { onToggle() },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = ColorPalette.success,
-                    uncheckedColor = ColorPalette.border,
-                    checkmarkColor = ColorPalette.textOnDark
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = task.isCompleted,
+                    onCheckedChange = { onToggle() },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = ColorPalette.success,
+                        uncheckedColor = ColorPalette.border,
+                        checkmarkColor = ColorPalette.textOnDark
+                    )
                 )
-            )
+                if (onDelete != null) {
+                    androidx.compose.material3.TextButton(onClick = onDelete) {
+                        Text(
+                            text = "Delete",
+                            style = AppTypography.labelSmall,
+                            color = ColorPalette.error
+                        )
+                    }
+                }
+            }
         }
     }
 }

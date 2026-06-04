@@ -17,11 +17,14 @@ import com.testsolz.shared.components.input.CustomTextField
 @Composable
 fun AddEmployeeModal(
     onDismiss: () -> Unit,
-    onConfirm: (name: String, email: String, department: String) -> Unit
+    onConfirm: (name: String, email: String, department: String, password: String, cardUid: String?) -> Unit,
+    isSaving: Boolean = false
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var department by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var cardUid by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -71,6 +74,21 @@ fun AddEmployeeModal(
                     placeholder = "e.g. Engineering"
                 )
 
+                CustomTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = "Temporary Password",
+                    placeholder = "Minimum 6 characters",
+                    isPassword = true
+                )
+
+                CustomTextField(
+                    value = cardUid,
+                    onValueChange = { cardUid = it.formatCardUidInput() },
+                    label = "Card UID",
+                    placeholder = "Optional, e.g. 00 00 00 00"
+                )
+
                 Spacer(modifier = Modifier.height(Spacing.md))
 
                 Row(
@@ -92,12 +110,22 @@ fun AddEmployeeModal(
 
                     PrimaryButton(
                         text = "Add Employee",
-                        onClick = { onConfirm(name, email, department) },
+                        onClick = { onConfirm(name, email, department, password, cardUid.takeIf { it.isNotBlank() }) },
                         modifier = Modifier.weight(1f),
-                        enabled = name.isNotBlank() && email.contains("@") && department.isNotBlank()
+                        isLoading = isSaving,
+                        enabled = !isSaving &&
+                            name.isNotBlank() &&
+                            email.contains("@") &&
+                            department.isNotBlank() &&
+                            password.length >= 6
                     )
                 }
             }
         }
     }
+}
+
+private fun String.formatCardUidInput(): String {
+    val compact = filter { it.isLetterOrDigit() }.uppercase().take(8)
+    return compact.chunked(2).joinToString(" ")
 }

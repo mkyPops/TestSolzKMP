@@ -13,12 +13,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.testsolz.core.authentication.AuthSession
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.designsystem.theme.*
 import com.testsolz.domain.models.User
 import com.testsolz.shared.components.buttons.PrimaryButton
 import com.testsolz.shared.components.buttons.SecondaryButton
 import com.testsolz.shared.components.cards.BaseCard
 import com.testsolz.shared.components.input.CustomTextField
+import kotlinx.coroutines.launch
 
 /**
  * Admin Profile View
@@ -26,11 +29,19 @@ import com.testsolz.shared.components.input.CustomTextField
  */
 @Composable
 fun AdminProfileView(
-    user: User = User.mockAdmin,
+    user: User,
     onLogout: () -> Unit = {}
 ) {
-    var adminUser by remember { mutableStateOf(user) }
+    var adminUser by remember(user.id) { mutableStateOf(user) }
     var isEditing by remember { mutableStateOf(false) }
+    var isSaving by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val apiClient = remember { TestSolzApiClient() }
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(Unit) {
+        onDispose { apiClient.close() }
+    }
 
     // Form states
     var name by remember(adminUser) { mutableStateOf(adminUser.name) }
@@ -127,6 +138,9 @@ fun AdminProfileView(
                         AdminInfoRow("Role", adminUser.role.displayName)
                         AdminInfoRow("Department", adminUser.department ?: "N/A")
                         AdminInfoRow("Employee ID", adminUser.id)
+                        if (errorMessage != null) {
+                            AdminInfoRow("Error", errorMessage!!)
+                        }
                     }
                 } else {
                     // Edit Mode
@@ -193,13 +207,30 @@ fun AdminProfileView(
                             PrimaryButton(
                                 text = "Save",
                                 onClick = {
-                                    adminUser = adminUser.copy(name = name, email = email)
-                                    isEditing = false
-                                    password = ""
-                                    confirmPassword = ""
+                                    coroutineScope.launch {
+                                        isSaving = true
+                                        errorMessage = null
+                                        try {
+                                            val updatedUser = apiClient.updateMe(
+                                                name = name,
+                                                department = adminUser.department,
+                                                password = password.takeIf { it.isNotBlank() }
+                                            )
+                                            adminUser = updatedUser
+                                            AuthSession.updateUser(updatedUser)
+                                            isEditing = false
+                                            password = ""
+                                            confirmPassword = ""
+                                        } catch (error: Exception) {
+                                            errorMessage = error.message ?: "Failed to update profile"
+                                        } finally {
+                                            isSaving = false
+                                        }
+                                    }
                                 },
                                 modifier = Modifier.weight(1f),
-                                enabled = name.isNotBlank() && email.contains("@") && 
+                                isLoading = isSaving,
+                                enabled = !isSaving && name.isNotBlank() && email.contains("@") &&
                                           (password.isEmpty() || (password == confirmPassword && password.length >= 6))
                             )
                         }

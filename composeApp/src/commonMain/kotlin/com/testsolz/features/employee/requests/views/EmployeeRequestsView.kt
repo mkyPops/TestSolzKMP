@@ -10,6 +10,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -47,9 +48,13 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployeeRequestsView(
-    viewModel: RequestsViewModel = viewModel()
+    sessionKey: String,
+    viewModel: RequestsViewModel = viewModel(key = "employee-requests-$sessionKey")
 ) {
     val requests by viewModel.requests.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val isSubmitting by viewModel.isSubmitting.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     var activeSheet by remember { mutableStateOf<RequestSheetType?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -84,20 +89,43 @@ fun EmployeeRequestsView(
                     Box(modifier = Modifier.weight(1f)) {
                         PrimaryButton(
                             text = "Leave Request",
-                            onClick = { activeSheet = RequestSheetType.LEAVE }
+                            onClick = { activeSheet = RequestSheetType.LEAVE },
+                            enabled = !isSubmitting
                         )
                     }
                     Box(modifier = Modifier.weight(1f)) {
                         PrimaryButton(
                             text = "Late Arrival",
-                            onClick = { activeSheet = RequestSheetType.LATE }
+                            onClick = { activeSheet = RequestSheetType.LATE },
+                            enabled = !isSubmitting
+                        )
+                    }
+                }
+            }
+
+            if (errorMessage != null) {
+                item {
+                    BaseCard(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = errorMessage!!,
+                            style = AppTypography.bodyMedium,
+                            color = ColorPalette.error
                         )
                     }
                 }
             }
 
             // Requests list
-            if (requests.isEmpty()) {
+            if (isLoading) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(Spacing.lg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = ColorPalette.primary)
+                    }
+                }
+            } else if (requests.isEmpty()) {
                 item {
                     BaseCard(modifier = Modifier.fillMaxWidth()) {
                         Column(
@@ -123,7 +151,8 @@ fun EmployeeRequestsView(
                 items(requests) { request ->
                     RequestCard(
                         request = request,
-                        onClick = { /* TODO: Navigate to details */ }
+                        onClick = { },
+                        onDelete = { viewModel.deleteRequest(request.id) }
                     )
                 }
             }

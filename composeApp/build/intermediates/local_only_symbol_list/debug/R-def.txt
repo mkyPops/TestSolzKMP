@@ -5,3 +5,10 @@ mipmap ic_launcher2
 mipmap ic_launcher3
 mipmap ic_launcher4
 mipmap ic_launcher5
+string firebase_database_url
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
+string google_storage_bucket
+string project_id

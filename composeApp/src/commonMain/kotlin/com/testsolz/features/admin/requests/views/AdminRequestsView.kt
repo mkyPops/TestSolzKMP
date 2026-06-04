@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,13 +26,20 @@ import com.testsolz.shared.components.cards.RequestCard
  */
 @Composable
 fun AdminRequestsView(
-    viewModel: AdminRequestsViewModel = viewModel()
+    sessionKey: String,
+    viewModel: AdminRequestsViewModel = viewModel(key = "admin-requests-$sessionKey")
 ) {
     val pendingRequests by viewModel.requests.collectAsState()
     val reviewedRequests by viewModel.reviewedRequests.collectAsState()
     val selectedRequest by viewModel.selectedRequest.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedTabIndex by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadRequests()
+    }
 
     // Show modal when a request is selected
     if (selectedRequest != null) {
@@ -90,6 +98,28 @@ fun AdminRequestsView(
             }
         }
 
+        if (errorMessage != null) {
+            item {
+                BaseCard(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = errorMessage!!,
+                        style = AppTypography.bodyMedium,
+                        color = ColorPalette.error
+                    )
+                }
+            }
+        }
+
+        if (isLoading) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.lg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = ColorPalette.primary)
+                }
+            }
+        } else {
         when (selectedTabIndex) {
             0 -> {
                 // Pending tab
@@ -107,7 +137,8 @@ fun AdminRequestsView(
                     items(pendingRequests) { request ->
                         RequestCard(
                             request = request,
-                            onClick = { viewModel.selectRequest(request) }
+                            onClick = { viewModel.selectRequest(request) },
+                            onDelete = { viewModel.deleteRequest(request.id) }
                         )
                     }
                 }
@@ -128,11 +159,13 @@ fun AdminRequestsView(
                     items(reviewedRequests) { request ->
                         RequestCard(
                             request = request,
-                            onClick = { /* Already reviewed */ }
+                            onClick = { },
+                            onDelete = { viewModel.deleteRequest(request.id) }
                         )
                     }
                 }
             }
+        }
         }
 
         // Bottom spacing

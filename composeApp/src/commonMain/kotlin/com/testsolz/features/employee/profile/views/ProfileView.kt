@@ -12,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.testsolz.core.authentication.AuthSession
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.designsystem.theme.*
 import com.testsolz.domain.models.User
 import com.testsolz.shared.components.buttons.PrimaryButton
 import com.testsolz.shared.components.buttons.SecondaryButton
 import com.testsolz.shared.components.cards.BaseCard
 import com.testsolz.shared.components.input.CustomTextField
+import kotlinx.coroutines.launch
 
 /**
  * Profile View
@@ -25,11 +28,19 @@ import com.testsolz.shared.components.input.CustomTextField
  */
 @Composable
 fun ProfileView(
-    user: User = User.mock,
+    user: User,
     onLogout: () -> Unit = {}
 ) {
-    var employeeUser by remember { mutableStateOf(user) }
+    var employeeUser by remember(user.id) { mutableStateOf(user) }
     var isEditing by remember { mutableStateOf(false) }
+    var isSaving by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val apiClient = remember { TestSolzApiClient() }
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(Unit) {
+        onDispose { apiClient.close() }
+    }
 
     // Form states
     var name by remember(employeeUser) { mutableStateOf(employeeUser.name) }
@@ -125,6 +136,9 @@ fun ProfileView(
                         InfoRow("Role", employeeUser.role.displayName)
                         InfoRow("Department", employeeUser.department ?: "N/A")
                         InfoRow("Contact", if (phone.isNotBlank()) phone else "Not set")
+                        if (errorMessage != null) {
+                            InfoRow("Error", errorMessage!!)
+                        }
                     }
                 } else {
                     // Edit Mode
@@ -167,11 +181,27 @@ fun ProfileView(
                             PrimaryButton(
                                 text = "Save",
                                 onClick = {
-                                    employeeUser = employeeUser.copy(name = name, email = email)
-                                    isEditing = false
+                                    coroutineScope.launch {
+                                        isSaving = true
+                                        errorMessage = null
+                                        try {
+                                            val updatedUser = apiClient.updateMe(
+                                                name = name,
+                                                department = employeeUser.department
+                                            )
+                                            employeeUser = updatedUser
+                                            AuthSession.updateUser(updatedUser)
+                                            isEditing = false
+                                        } catch (error: Exception) {
+                                            errorMessage = error.message ?: "Failed to update profile"
+                                        } finally {
+                                            isSaving = false
+                                        }
+                                    }
                                 },
                                 modifier = Modifier.weight(1f),
-                                enabled = name.isNotBlank() && email.contains("@")
+                                isLoading = isSaving,
+                                enabled = !isSaving && name.isNotBlank() && email.contains("@")
                             )
                         }
                     }

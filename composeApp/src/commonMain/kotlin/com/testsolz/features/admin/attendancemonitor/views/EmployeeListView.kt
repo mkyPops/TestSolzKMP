@@ -14,9 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.testsolz.designsystem.theme.*
 import com.testsolz.domain.models.User
-import com.testsolz.domain.models.UserRole
+import com.testsolz.features.admin.attendancemonitor.viewmodels.AdminEmployeesViewModel
 import com.testsolz.shared.components.cards.BaseCard
 
 /**
@@ -24,38 +25,18 @@ import com.testsolz.shared.components.cards.BaseCard
  * Monitor all employee attendance
  */
 @Composable
-fun EmployeeListView() {
+fun EmployeeListView(
+    sessionKey: String,
+    viewModel: AdminEmployeesViewModel = viewModel(key = "admin-employees-$sessionKey")
+) {
     var showAddEmployeeModal by remember { mutableStateOf(false) }
     var editingEmployee by remember { mutableStateOf<User?>(null) }
     var viewingHistoryEmployee by remember { mutableStateOf<User?>(null) }
 
-    // Use mutableStateListOf to make the list reactive
-    val employees = remember {
-        mutableStateListOf(
-            User.mock,
-            User(
-                id = "2",
-                email = "sarah@testsolz.com",
-                name = "Sarah Wilson",
-                role = UserRole.EMPLOYEE,
-                department = "Design"
-            ),
-            User(
-                id = "3",
-                email = "mike@testsolz.com",
-                name = "Mike Johnson",
-                role = UserRole.EMPLOYEE,
-                department = "Marketing"
-            ),
-            User(
-                id = "4",
-                email = "jane@testsolz.com",
-                name = "Jane Smith",
-                role = UserRole.EMPLOYEE,
-                department = "Engineering"
-            )
-        )
-    }
+    val employees by viewModel.employees.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     if (viewingHistoryEmployee != null) {
         EmployeeHistoryView(
@@ -68,18 +49,17 @@ fun EmployeeListView() {
     if (showAddEmployeeModal) {
         AddEmployeeModal(
             onDismiss = { showAddEmployeeModal = false },
-            onConfirm = { name, email, department ->
-                val newId = (employees.size + 1).toString()
-                val newEmployee = User(
-                    id = newId,
-                    email = email,
+            onConfirm = { name, email, department, password, cardUid ->
+                viewModel.createEmployee(
                     name = name,
-                    role = UserRole.EMPLOYEE,
-                    department = department
+                    email = email,
+                    department = department,
+                    password = password,
+                    cardUid = cardUid,
+                    onSuccess = { showAddEmployeeModal = false }
                 )
-                employees.add(newEmployee)
-                showAddEmployeeModal = false
-            }
+            },
+            isSaving = isSaving
         )
     }
 
@@ -87,17 +67,17 @@ fun EmployeeListView() {
         EditEmployeeModal(
             employee = editingEmployee!!,
             onDismiss = { editingEmployee = null },
-            onConfirm = { name, email, department ->
-                val index = employees.indexOfFirst { it.id == editingEmployee!!.id }
-                if (index != -1) {
-                    employees[index] = editingEmployee!!.copy(
-                        name = name,
-                        email = email,
-                        department = department
-                    )
-                }
-                editingEmployee = null
-            }
+            onConfirm = { name, department, password, cardUid ->
+                viewModel.updateEmployee(
+                    employee = editingEmployee!!,
+                    name = name,
+                    department = department,
+                    password = password,
+                    cardUid = cardUid,
+                    onSuccess = { editingEmployee = null }
+                )
+            },
+            isSaving = isSaving
         )
     }
 
@@ -137,8 +117,42 @@ fun EmployeeListView() {
             }
         }
 
+        if (errorMessage != null) {
+            item {
+                BaseCard(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = errorMessage!!,
+                        style = AppTypography.bodyMedium,
+                        color = ColorPalette.error
+                    )
+                }
+            }
+        }
+
+        if (isLoading) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(Spacing.lg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = ColorPalette.primary)
+                }
+            }
+        }
+
+        if (!isLoading && employees.isEmpty()) {
+            item {
+                BaseCard(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "No employees found",
+                        style = AppTypography.bodyMedium,
+                        color = ColorPalette.textSecondary
+                    )
+                }
+            }
+        }
+
         items(employees, key = { it.id }) { employee ->
-            val isLate = employee.id.toIntOrNull()?.rem(2) == 0
             BaseCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -180,8 +194,9 @@ fun EmployeeListView() {
                                 )
                             }
                             IconButton(
-                                onClick = { employees.remove(employee) },
-                                modifier = Modifier.size(32.dp)
+                                onClick = { viewModel.deleteEmployee(employee) },
+                                modifier = Modifier.size(32.dp),
+                                enabled = !isSaving
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
@@ -204,40 +219,17 @@ fun EmployeeListView() {
                             color = ColorPalette.textSecondary
                         )
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = ColorPalette.statusCheckedIn.copy(alpha = 0.12f),
-                                        shape = Shapes.badge
-                                    )
-                                    .padding(horizontal = Spacing.sm, vertical = Spacing.xxs)
-                            ) {
-                                Text(
-                                    text = "Checked In",
-                                    style = AppTypography.labelSmall,
-                                    color = ColorPalette.statusCheckedIn
-                                )
-                            }
-
-                            val statusText = if (isLate) "Late" else "On Time"
-                            val statusColor = if (isLate) ColorPalette.error else ColorPalette.primary
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = statusColor.copy(alpha = 0.12f),
-                                        shape = Shapes.badge
-                                    )
-                                    .padding(horizontal = Spacing.sm, vertical = Spacing.xxs)
-                            ) {
-                                Text(
-                                    text = statusText,
-                                    style = AppTypography.labelSmall,
-                                    color = statusColor
-                                )
-                            }
-                        }
+                        Text(
+                            text = employee.email,
+                            style = AppTypography.bodySmall,
+                            color = ColorPalette.textTertiary
+                        )
                     }
+                    Text(
+                        text = employee.cardUid ?: "Card UID not assigned",
+                        style = AppTypography.bodySmall,
+                        color = if (employee.cardUid == null) ColorPalette.warning else ColorPalette.textSecondary
+                    )
                 }
             }
         }

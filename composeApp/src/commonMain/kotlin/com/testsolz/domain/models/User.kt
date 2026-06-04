@@ -13,6 +13,8 @@ data class User(
     val name: String,
     val role: UserRole,
     val department: String? = null,
+    val cardUid: String? = null,
+    val status: String? = null,
     val profileImageURL: String? = null
 ) {
     companion object {

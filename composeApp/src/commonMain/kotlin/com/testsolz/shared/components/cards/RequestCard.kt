@@ -21,6 +21,7 @@ import com.testsolz.domain.models.RequestType
 fun RequestCard(
     request: LeaveRequest,
     onClick: () -> Unit,
+    onDelete: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     BaseCard(
@@ -131,6 +132,21 @@ fun RequestCard(
                         Text(
                             text = adminComment,
                             style = AppTypography.bodySmall
+                        )
+                    }
+                }
+            }
+
+            if (onDelete != null) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    androidx.compose.material3.TextButton(onClick = onDelete) {
+                        Text(
+                            text = "Delete",
+                            style = AppTypography.labelMedium,
+                            color = ColorPalette.error
                         )
                     }
                 }

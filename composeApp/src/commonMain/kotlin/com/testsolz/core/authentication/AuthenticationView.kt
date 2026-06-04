@@ -101,32 +101,6 @@ fun AuthenticationView(
                 )
             }
             
-            Spacer(modifier = Modifier.height(Spacing.lg))
-            
-            // Test credentials hint
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ColorPalette.infoLight, Shapes.card)
-                    .padding(Spacing.md),
-                verticalArrangement = Arrangement.spacedBy(Spacing.xs)
-            ) {
-                Text(
-                    text = "Test Credentials:",
-                    style = AppTypography.labelMedium,
-                    color = ColorPalette.textSecondary
-                )
-                Text(
-                    text = "Admin: admin@testsolz.com / admin123",
-                    style = AppTypography.captionMedium,
-                    color = ColorPalette.textSecondary
-                )
-                Text(
-                    text = "Employee: any@testsolz.com / test123",
-                    style = AppTypography.captionMedium,
-                    color = ColorPalette.textSecondary
-                )
-            }
         }
     }
 }

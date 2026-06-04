@@ -2,8 +2,8 @@ package com.testsolz.core.authentication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.testsolz.core.network.TestSolzApiClient
 import com.testsolz.domain.models.User
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 /**
  * Authentication View Model
  * Handles login logic and authentication state
- * In production, this would connect to your backend API
  */
 class AuthenticationViewModel : ViewModel() {
+    private val apiClient = TestSolzApiClient()
     
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
@@ -33,6 +33,9 @@ class AuthenticationViewModel : ViewModel() {
     
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
+
+    private val _authToken = MutableStateFlow<String?>(null)
+    val authToken: StateFlow<String?> = _authToken.asStateFlow()
     
     fun updateEmail(newEmail: String) {
         _email.value = newEmail
@@ -60,23 +63,19 @@ class AuthenticationViewModel : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             
-            // Simulate API call (replace with real API in production)
-            delay(1500) // 1.5 seconds
-            
-            // Mock authentication logic
-            // In production: Call your backend API here
-            when {
-                email.value.lowercase() == "admin@testsolz.com" && password.value == "admin123" -> {
-                    _currentUser.value = User.mockAdmin
-                    _isAuthenticated.value = true
-                }
-                email.value.lowercase().contains("@testsolz.com") && password.value == "test123" -> {
-                    _currentUser.value = User.mock
-                    _isAuthenticated.value = true
-                }
-                else -> {
-                    _errorMessage.value = "Invalid email or password"
-                }
+            try {
+                val response = apiClient.login(
+                    email = email.value.trim(),
+                    password = password.value
+                )
+
+                _authToken.value = response.token
+                _currentUser.value = response.user
+                AuthSession.update(token = response.token, user = response.user)
+                _isAuthenticated.value = true
+            } catch (error: Exception) {
+                _errorMessage.value = error.message ?: "Login failed"
+                _isAuthenticated.value = false
             }
             
             _isLoading.value = false
@@ -86,6 +85,8 @@ class AuthenticationViewModel : ViewModel() {
     // MARK: - Logout
     fun logout() {
         _currentUser.value = null
+        _authToken.value = null
+        AuthSession.clear()
         _isAuthenticated.value = false
         _email.value = ""
         _password.value = ""
@@ -94,5 +95,10 @@ class AuthenticationViewModel : ViewModel() {
     // MARK: - Clear Error
     fun clearError() {
         _errorMessage.value = null
+    }
+
+    override fun onCleared() {
+        apiClient.close()
+        super.onCleared()
     }
 }

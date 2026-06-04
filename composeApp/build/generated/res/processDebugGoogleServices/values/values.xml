@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="firebase_database_url" translatable="false">https://officeattendance-a430f-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+    <string name="gcm_defaultSenderId" translatable="false">460271420654</string>
+    <string name="google_api_key" translatable="false">AIzaSyAtjgUqHgyfbihG4KJlsDWfik5zTCo23CA</string>
+    <string name="google_app_id" translatable="false">1:460271420654:android:1c889ddbba1e5da1609fff</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAtjgUqHgyfbihG4KJlsDWfik5zTCo23CA</string>
+    <string name="google_storage_bucket" translatable="false">officeattendance-a430f.firebasestorage.app</string>
+    <string name="project_id" translatable="false">officeattendance-a430f</string>
+</resources>
